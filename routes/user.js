@@ -48,12 +48,10 @@ router.post("/login", (req, res) => {
         return res.status(401).json({ message: "Wait for Admin Approval" });
       } else if (results[0].password == user.password) {
         const response = { email: results[0].email, role: results[0].role };
-        const accessToken = jwt
-          .sign(response, process.env.ACCESS_TOKEN, {
-            expiresIn: "8h",
-          })
-          .res.status(200)
-          .json({ token: accessToken });
+        const accessToken = jwt.sign(response, process.env.ACCESS_TOKEN, {
+          expiresIn: "8h",
+        });
+        res.status(200).json({ token: accessToken });
       } else {
         return res
           .status(400)

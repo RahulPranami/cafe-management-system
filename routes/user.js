@@ -63,4 +63,38 @@ router.post("/login", (req, res) => {
   });
 });
 
+var transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: { user: process.env.EMAIL, pass: process.env.PASSWORD },
+});
+
+router.post("/forgotpassword", (req, res) => {
+  const user = req.body;
+  query = "select email,password from user where email=?";
+  connection.query(query, [user.email], (err, results) => {
+    if (!err) {
+      if (results.length <= 0) {
+        return res
+          .status(200)
+          .json({ message: "Password Sent Successfully to Your Email." });
+      } else {
+        var mailOptionis = {
+          from: process.env.EMAIL,
+          to: results[0].email,
+          subject: "Password Reset Request for Cafe Management System",
+          html: "<p><b> Your Login details for Cafe Management System</b><br><b>Email : </b> '+ results[0].email+'<br><b>Password : </b> '+ results[0].password+'<br> <a href='http://ec2-54-144-215-218.compute-1.amazonaws.com:4200'> Click here to Login</a> </p>;",
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email Sent : " + info.response);
+          }
+        });
+      }
+    } else {
+      return res.status(500).json(err);
+    }
+  });
+});
 module.exports = router;

@@ -5,6 +5,8 @@ const nodemailer = require("nodemailer");
 
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+var auth = require("../services/authentication");
+var checkRole = require("../services/checkRole");
 
 router.post("/signup", (req, res) => {
   let user = req.body;
@@ -109,4 +111,40 @@ router.post("/forgotpassword", (req, res) => {
     }
   });
 });
+
+router.get("/get", auth.authenticateToken, (req, res) => {
+  var query =
+    "select id,name,email,contactNumber,status from user where role='user'";
+  connection.query(query, (err, results) => {
+    if (!err) {
+      return res.status(200).json(results);
+    } else {
+      return res.status(500).json(err);
+    }
+  });
+});
+
+router.patch("/update", (req, res) => {
+  let user = req.body;
+  var query = "update user set status=? where id=?";
+  connection.query(query, [user.status, user.id], (err, results) => {
+    if (!err) {
+      if (results.affectedRows) {
+        return res.status(404).json({ message: "User Id Does not Exist!" });
+      }
+      return res.status(200).json({ message: "User Updated Successfully." });
+    } else {
+      return res.status(500).json(err);
+    }
+  });
+});
+
+router.get("/checkToken", (req, res) => {
+  return res.status(200).json({ message: "true" });
+});
+
+router.post("/changePassword", (req, res) => {
+  // const
+});
+
 module.exports = router;

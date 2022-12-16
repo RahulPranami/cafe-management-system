@@ -1,6 +1,7 @@
 const express = require("express");
 const connection = require("../connection");
 const router = express.Router();
+const nodemailer = require("nodemailer");
 
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -65,7 +66,10 @@ router.post("/login", (req, res) => {
 
 var transporter = nodemailer.createTransport({
   service: "gmail",
-  auth: { user: process.env.EMAIL, pass: process.env.PASSWORD },
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD,
+  },
 });
 
 router.post("/forgotpassword", (req, res) => {
@@ -78,11 +82,16 @@ router.post("/forgotpassword", (req, res) => {
           .status(200)
           .json({ message: "Password Sent Successfully to Your Email." });
       } else {
-        var mailOptionis = {
+        var mailOptions = {
           from: process.env.EMAIL,
           to: results[0].email,
           subject: "Password Reset Request for Cafe Management System",
-          html: "<p><b> Your Login details for Cafe Management System</b><br><b>Email : </b> '+ results[0].email+'<br><b>Password : </b> '+ results[0].password+'<br> <a href='http://ec2-54-144-215-218.compute-1.amazonaws.com:4200'> Click here to Login</a> </p>;",
+          html:
+            "<p><b> Your Login details for Cafe Management System</b><br><b>Email : </b> " +
+            results[0].email +
+            "<br><b>Password : </b> " +
+            results[0].password +
+            "<br> <a href='http://ec2-54-144-215-218.compute-1.amazonaws.com:4200'> Click here to Login</a> </p>",
         };
         transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
@@ -90,6 +99,9 @@ router.post("/forgotpassword", (req, res) => {
           } else {
             console.log("Email Sent : " + info.response);
           }
+        });
+        return res.status(200).json({
+          message: "Password reset Link sent to your email successfully.",
         });
       }
     } else {

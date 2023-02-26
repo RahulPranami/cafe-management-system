@@ -1,12 +1,47 @@
-create table user(
-    id int primary key AUTO_INCREMENT,
-    name varchar(250),
-    contactNumber varchar(20),
-    email varchar(50),
-    password varchar(250),
-    status varchar(20),
-    role varchar(20),
-    UNIQUE (email)
-);
+CREATE TABLE
+    user(
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        name VARCHAR(250),
+        contactNumber VARCHAR(20),
+        email VARCHAR(50),
+        password VARCHAR(250),
+        status VARCHAR(20),
+        role VARCHAR(20),
+        UNIQUE (email)
+    );
 
-insert into user(name , contactNumber , email , password ,status , role ) VALUES( 'admin' , '1234567890' , 'admin@gmail.com' , 'root','true','admin' );
+INSERT INTO
+    user(
+        name,
+        contactNumber,
+        email,
+        password,
+        status,
+        role
+    )
+VALUES (
+        'admin',
+        '1234567890',
+        'admin@gmail.com',
+        'root',
+        'true',
+        'admin'
+    );
+
+CREATE TABLE
+    category(
+        id INT NOT NULL AUTO_INCREMENT,
+        name VARCHAR(255) NOT NULL,
+        PRIMARY KEY(id)
+    );
+
+CREATE TABLE
+    product(
+        id INT NOT NULL AUTO_INCREMENT,
+        name VARCHAR(255) NOT NULL,
+        categoryId INTEGER NOT NULL,
+        description VARCHAR(255),
+        price DECIMAL(6, 2),
+        status VARCHAR(20),
+        PRIMARY KEY(id)
+    );

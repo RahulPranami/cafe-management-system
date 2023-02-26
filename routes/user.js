@@ -133,7 +133,7 @@ router.patch(
     var query = "update user set status=? where id=?";
     connection.query(query, [user.status, user.id], (err, results) => {
       if (!err) {
-        if (results.affectedRows) {
+        if (results.affectedRows == 0) {
           return res.status(404).json({ message: "User Id Does not Exist!" });
         }
         return res.status(200).json({ message: "User Updated Successfully." });
